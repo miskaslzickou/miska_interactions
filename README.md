@@ -7,6 +7,7 @@
 * Dragging
 * Searching
 * Putting into car/ taking out of car
+* Installation files included
 ## Dependencies
 * es_extended
 * ox_lib
