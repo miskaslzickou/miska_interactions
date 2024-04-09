@@ -1,0 +1,24 @@
+    ['sack'] = {
+		label = 'Pytel',
+		weight = 500,
+		stack = true
+	},
+    ['zipties'] =  {
+		label = 'Zipties',
+		weight = 50,
+		stack = true,
+		description = 'You can tie up a lot of things with it.'
+	},
+	['handcuffs'] = {
+		label = 'Pouta',
+		weight = 100,
+		stack = true,
+		description = 'You can cuff people with it'
+	},
+	['handcuff_keys'] = {
+		label = 'Klíče od pout',
+		weight = 50,
+		stack = true,
+		description = 'Useful for unlocking handcuffs'
+	},
+

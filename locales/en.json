@@ -1,0 +1,23 @@
+{
+    "search":"Search",
+    "searching":"Searching...",
+    "cuff_with_zipties":"Cuff with zipties",
+    "cut_zipties":"Cut zipties",
+    "cant_cut_zipties":"You can't cut the zipties",
+    "you_arent_holding_anything_sharp":"You aren't holding anything sharp",
+    "cuff_with_handcuffs":"Cuff with handcuffs",
+    "unlock_handcuffs": "Unlock handcuffs",
+    "take_person":"Take the person",
+    "stop_dragging":"Stop dragging the person",
+    "put_into_car":"Put the person into vehicle",
+    "take_out_of_car":"Take the person out of the vehicle",
+    "tow_car_away":"Tow the car away",
+    "towing_car_away":"Towing the car away...",
+    "put_bag_on_head":"Put bag on",
+    "putting_bag_on_head":"Putting bag on the head...",
+    "take_bag_off":"Take the bag off"
+
+
+
+
+}
