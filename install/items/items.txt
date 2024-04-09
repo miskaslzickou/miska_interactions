@@ -1,5 +1,5 @@
     ['sack'] = {
-		label = 'Pytel',
+		label = 'Bag',
 		weight = 500,
 		stack = true
 	},
@@ -10,13 +10,13 @@
 		description = 'You can tie up a lot of things with it.'
 	},
 	['handcuffs'] = {
-		label = 'Pouta',
+		label = 'Handcuffs',
 		weight = 100,
 		stack = true,
 		description = 'You can cuff people with it'
 	},
 	['handcuff_keys'] = {
-		label = 'Klíče od pout',
+		label = 'Handcuff keys',
 		weight = 50,
 		stack = true,
 		description = 'Useful for unlocking handcuffs'
