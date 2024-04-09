@@ -1,4 +1,4 @@
--- Resource Metadata
+
 fx_version 'cerulean'
 games   { 'rdr3', 'gta5' } 
 lua54 'yes'
@@ -12,8 +12,8 @@ dependencies {
     'ox_lib'
     
 }
--- What to run
-client_script 'main.lua'
+
+client_script 'client.lua'
     
  ui_page 'html/index.html'
  files {'html/index.html',
