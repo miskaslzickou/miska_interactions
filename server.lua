@@ -55,12 +55,13 @@ RegisterNetEvent('miska_interactions:leave_car',function (targetPlayerId)
 end)
 RegisterNetEvent('miska_interactions:put_bag_on',function (targetPlayerId)
     bagCount = exports.ox_inventory:GetItemCount(source,Config.Items.bagItem)
-    print(bagCount)
+    
     if bagCount == 0 or targetPlayerId == -1 then
         DropPlayer(source,'Cheating')
     else
-    exports.ox_inventory:RemoveItem(source,1,Config.Items.bagItem)
-   
+        Player(targetPlayerId).state.hasBagOnHead = true
+    exports.ox_inventory:RemoveItem(source,Config.Items.bagItem,1)
+        
     TriggerClientEvent('miska_interactions:put_bag_oncl',targetPlayerId)
     end
 end)
@@ -68,7 +69,9 @@ RegisterNetEvent('miska_interactions:put_bag_off',function (targetPlayerId)
 if targetPlayerId == -1 then
     DropPlayer(source,'Cheating')
 end
-exports.ox_inventory:AddItem(source,1,Config.Items.bagItem)
-  
+
+    exports.ox_inventory:AddItem(source,Config.Items.bagItem,1)
+
+Player(targetPlayerId).state.hasBagOnHead = nil
     TriggerClientEvent('miska_interactions:put_bag_offcl',targetPlayerId)
 end)

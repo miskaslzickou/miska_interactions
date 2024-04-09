@@ -574,7 +574,7 @@ RegisterNetEvent('miska_interactions:put_bag_oncl',function ()
         bagStatus = true
         })
     SetModelAsNoLongerNeeded(bagModel)
-    LocalPlayer.state.hasBagOnHead = true
+   
    
 end)
 RegisterNetEvent('miska_interactions:put_bag_offcl',function ()
@@ -583,6 +583,6 @@ RegisterNetEvent('miska_interactions:put_bag_offcl',function ()
         bagStatus = false
 
     })
-    LocalPlayer.state.hasBagOnHead = nil
+    
     ESX.Game.DeleteObject(bagEntity)
 end)
