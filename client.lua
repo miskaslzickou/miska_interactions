@@ -99,7 +99,7 @@ exports.ox_target:addGlobalPlayer(
         if hasaSharpWeapon() == true then
            
             if LocalPlayer.state.Dragging == targetPlayerId then
-                TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
+                TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                 LocalPlayer.state.Dragging = nil
             end
             lib.requestAnimDict('mp_arresting')
@@ -174,7 +174,7 @@ exports.ox_target:addGlobalPlayer(
             exports.ox_target:disableTargeting(true)
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
             if LocalPlayer.state.Dragging == targetPlayerId then
-                TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
+                TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                 LocalPlayer.state.Dragging = nil
             end
         
