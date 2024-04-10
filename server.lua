@@ -37,15 +37,15 @@ RegisterNetEvent('miska_interactions:handcuff_free',function (targetPlayerId)
     exports.ox_inventory:AddItem(source,Config.Items.handcuffsItem,1)
     
 end)
-RegisterNetEvent('miska_interactions:carrying',function (targetPlayerId,ped)
-    Player(targetPlayerId).state.isBeingCarried = true 
+RegisterNetEvent('miska_interactions:dragging',function (targetPlayerId,ped)
+    Player(targetPlayerId).state.isBeingDragged = true 
 
-    TriggerClientEvent('miska_interactions:carry',targetPlayerId,ped)
+    TriggerClientEvent('miska_interactions:drag',targetPlayerId,ped)
 end)
-RegisterNetEvent('miska_interactions:stop_carry',function (targetPlayerId)
-    Player(targetPlayerId).state.isBeingCarried = nil 
+RegisterNetEvent('miska_interactions:stop_dragging',function (targetPlayerId)
+    Player(targetPlayerId).state.isBeingDragged = nil 
 
-    TriggerClientEvent('miska_interactions:stop_carrying',targetPlayerId)
+    TriggerClientEvent('miska_interactions:stop_dragging',targetPlayerId)
 end)
 RegisterNetEvent('miska_interactions:put_into_car',function (targetPlayerId,vehicle)
     TriggerClientEvent('miska_interactions:put_into_carcl',targetPlayerId,vehicle)

@@ -98,9 +98,9 @@ exports.ox_target:addGlobalPlayer(
         exports.ox_target:disableTargeting(true)
         if hasaSharpWeapon() == true then
            
-            if LocalPlayer.state.Carrying == targetPlayerId then
+            if LocalPlayer.state.Dragging == targetPlayerId then
                 TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
-                LocalPlayer.state.Carrying = nil
+                LocalPlayer.state.Dragging = nil
             end
             lib.requestAnimDict('mp_arresting')
             TaskPlayAnim(cache.ped,'mp_arresting','a_uncuff',8.0,-8,3000,0,0.0,false,false,false)
@@ -173,9 +173,9 @@ exports.ox_target:addGlobalPlayer(
           if IsPedDeadOrDying(cache.ped,true) == false then
             exports.ox_target:disableTargeting(true)
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-            if LocalPlayer.state.Carrying == targetPlayerId then
+            if LocalPlayer.state.Dragging == targetPlayerId then
                 TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
-                LocalPlayer.state.Carrying = nil
+                LocalPlayer.state.Dragging = nil
             end
         
             lib.requestAnimDict('mp_arresting')
@@ -199,11 +199,11 @@ exports.ox_target:addGlobalPlayer(
     distance = 2,
     canInteract = function (entity)
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)) 
-        if  LocalPlayer.state.Carrying ==  nil and Player(targetPlayerId).state.isBeingCarried == nil  and Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(cache.ped)==1 then
+        if  LocalPlayer.state.Dragging ==  nil and Player(targetPlayerId).state.isBeingDragged == nil  and Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(cache.ped)==1 then
             return true
       
            
-        elseif LocalPlayer.state.Carrying ~= nil then
+        elseif LocalPlayer.state.Dragging ~= nil then
             return false
         end
     end,
@@ -212,8 +212,8 @@ exports.ox_target:addGlobalPlayer(
         if IsPedDeadOrDying(cache.ped,true) == false then
       
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-        LocalPlayer.state.Carrying = targetPlayerId
-        TriggerServerEvent('miska_interactions:carrying',targetPlayerId,PedToNet(PlayerPedId()))
+        LocalPlayer.state.Dragging = targetPlayerId
+        TriggerServerEvent('miska_interactions:dragging',targetPlayerId,PedToNet(PlayerPedId()))
         end
     end
 
@@ -224,7 +224,7 @@ exports.ox_target:addGlobalPlayer(
     distance = 2,
     canInteract = function (entity)
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)) 
-        if LocalPlayer.state.Carrying == targetPlayerId and Player(targetPlayerId).state.isBeingCarried == true   then
+        if LocalPlayer.state.Dragging == targetPlayerId and Player(targetPlayerId).state.isBeingDragged == true   then
             return true
         else
             return false
@@ -233,9 +233,9 @@ exports.ox_target:addGlobalPlayer(
     onSelect = function (data)
         if IsPedDeadOrDying(cache.ped,true) == false then
         
-        LocalPlayer.state.Carrying = nil
+        LocalPlayer.state.Dragging = nil
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-        TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
+        TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
         end
     end
 
@@ -255,10 +255,10 @@ exports.ox_target:addGlobalPlayer(
     onSelect = function (data)
         if IsPedDeadOrDying(cache.ped,true) == false then
         local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
-     if LocalPlayer.state.Carrying == targetPlayerId  or Player(targetPlayerId).state.isBeingCarried == nil and LocalPlayer.state.Carrying == nil  then
-        if targetPlayerId == LocalPlayer.state.Carrying then
+     if LocalPlayer.state.Dragging == targetPlayerId  or Player(targetPlayerId).state.isBeingDragged == nil and LocalPlayer.state.Dragging == nil  then
+        if targetPlayerId == LocalPlayer.state.Dragging then
             TriggerServerEvent('miska_interactions:stop_carry',targetPlayerId)
-            LocalPlayer.state.Carrying = nil
+            LocalPlayer.state.Dragging = nil
         end
         local vehicle = lib.getClosestVehicle(GetEntityCoords(cache.ped), 7.0, true)
       
@@ -376,6 +376,18 @@ exports.ox_target:addGlobalVehicle({
             end
         end
         end
+    },
+    {
+        icon ='fa-solid fa-truck-ramp-box',
+        label = locale('take_out_of_trunk')
+        distance = 1,
+        canInteract = function(entity)
+        
+        end,
+        onSelect = function(data)
+        
+        end,
+
     }
 })
 
@@ -520,11 +532,11 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function ()
     ClearPedTasks(cache.ped)
     exports.ox_target:disableTargeting(false)
 end)
-RegisterNetEvent('miska_interactions:carry',function (dragger)
+RegisterNetEvent('miska_interactions:drag',function (dragger)
     local dragger = NetToPed(dragger)
       AttachEntityToEntity(cache.ped,dragger,11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, true, true, 2, true)
 end)
-RegisterNetEvent('miska_interactions:stop_carrying',function ()
+RegisterNetEvent('miska_interactions:stop_dragging',function ()
 
 DetachEntity(cache.ped,true,true)
 end)
