@@ -317,7 +317,7 @@ exports.ox_target:addGlobalPlayer(
             if IsPedDeadOrDying(cache.ped,true) == false then
                 if lib.progressBar({
                     duration = 4000,
-                    label = locale('take_bag_off),
+                    label = locale('take_bag_off'),
                     useWhileDead = false,
                     canCancel = true,
                     disable = {
@@ -377,18 +377,18 @@ exports.ox_target:addGlobalVehicle({
         end
         end
     },
-    {
-        icon ='fa-solid fa-truck-ramp-box',
-        label = locale('take_out_of_trunk')
-        distance = 1,
-        canInteract = function(entity)
+    -- {
+    --     icon ='fa-solid fa-truck-ramp-box',
+    --     label = locale('take_out_of_trunk'),
+    --     distance = 1,
+    --     canInteract = function(entity)
         
-        end,
-        onSelect = function(data)
+    --     end,
+    --     onSelect = function(data)
         
-        end,
+    --     end,
 
-    }
+    -- }
 })
 
 RegisterNetEvent('miska_interactions:ziptie_detainee:detaincli',function ()
