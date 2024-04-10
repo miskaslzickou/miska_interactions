@@ -317,7 +317,7 @@ exports.ox_target:addGlobalPlayer(
             if IsPedDeadOrDying(cache.ped,true) == false then
                 if lib.progressBar({
                     duration = 4000,
-                    label = 'Sundáváš pytel z hlavy',
+                    label = locale('take_bag_off),
                     useWhileDead = false,
                     canCancel = true,
                     disable = {
