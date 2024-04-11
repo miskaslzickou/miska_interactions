@@ -75,3 +75,33 @@ end
 Player(targetPlayerId).state.hasBagOnHead = nil
     TriggerClientEvent('miska_interactions:put_bag_offcl',targetPlayerId)
 end)
+
+RegisterNetEvent('miska_interactions:put_into_trunk',function (targetPlayerId,vehicle)
+    Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = targetPlayerId
+   
+    TriggerClientEvent('miska_interactions:put_into_trunkcl',targetPlayerId,vehicle)
+    
+    Player(targetPlayerId).state.InTrunk = vehicle
+end)
+RegisterNetEvent('miska_interactions:take_out_of_trunk',function (targetPlayerId,vehicle)
+    
+
+    TriggerClientEvent('miska_interactions:take_out_of_trunkcl',targetPlayerId,vehicle)
+    Player(targetPlayerId).state.InTrunk = nil
+    Wait(3000)
+
+    Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = nil
+end)
+RegisterNetEvent('miska_interactions:change_trunk_state',function (vehicle,value)
+    Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = value
+    
+end)
+RegisterNetEvent('miska_interactions:carry',function (targetPlayerId,ped)
+    TriggerClientEvent('miska_interactions:carrycl',targetPlayerId,source,ped)
+end)
+RegisterNetEvent('miska_interactions:carry_accepted',function (targetPlayerId)
+    TriggerClientEvent('miska_interactions:carry_acceptedcl',targetPlayerId,source)
+end)
+RegisterNetEvent('miska_interactions:carry_stop',function (playerId)
+    TriggerClientEvent('miska_interactions:carry_stopcl',playerId) 
+end)

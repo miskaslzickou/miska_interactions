@@ -15,7 +15,17 @@
     "towing_car_away":"Odtahuješ auto...",
     "put_bag_on_head":"Dát pytel na hlavu",
     "putting_bag_on_head":"Dáváš pytel na hlavu...",
-    "take_bag_off":"Sundat pytel z hlavy"
+    "take_bag_off":"Sundat pytel z hlavy",
+    "put_into_trunk":"Dát osobu do kufru",
+    "take_out_of_trunk":"Vytáhnout osobu z kufru",
+    "cant_put_into_trunk":"Nemůžeš dát osobu do kufru",
+    "no_vehicle_with_trunk":"Poblíž není vozidlo s dostatečně velkým kufrem.",
+    "carry_person":"Vzít osobu na rameno",
+    "carry_person_request":"Žádost o nošení",
+    "carry_player":"Hráč s id: ",
+    "wants_to_carry":" vás chce nosit.",
+    "stop_carry":"Přestat nosit"
+
 
 
 
