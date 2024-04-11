@@ -11,3 +11,4 @@
 ## Dependencies
 * es_extended
 * ox_lib
+* ox_target
