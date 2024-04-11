@@ -6,6 +6,8 @@
 * Putting bag on the head
 * Dragging
 * Searching
+* Carrying with request
+* putting people into trunk
 * Putting into car/ taking out of car
 * Installation files included
 ## Dependencies
