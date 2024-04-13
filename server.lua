@@ -78,19 +78,22 @@ end)
 
 RegisterNetEvent('miska_interactions:put_into_trunk',function (targetPlayerId,vehicle)
     Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = targetPlayerId
-   
+    Player(targetPlayerId).state.InTrunk = vehicle
+    Wait(400)
     TriggerClientEvent('miska_interactions:put_into_trunkcl',targetPlayerId,vehicle)
     
-    Player(targetPlayerId).state.InTrunk = vehicle
+  
 end)
 RegisterNetEvent('miska_interactions:take_out_of_trunk',function (targetPlayerId,vehicle)
     
 
     TriggerClientEvent('miska_interactions:take_out_of_trunkcl',targetPlayerId,vehicle)
+    
+    Wait(500)
     Player(targetPlayerId).state.InTrunk = nil
-    Wait(3000)
-
+    if vehicle ~= nil then
     Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = nil
+    end
 end)
 RegisterNetEvent('miska_interactions:change_trunk_state',function (vehicle,value)
     Entity(NetworkGetEntityFromNetworkId(vehicle)).state.PlayerInTrunk = value
@@ -104,4 +107,7 @@ RegisterNetEvent('miska_interactions:carry_accepted',function (targetPlayerId)
 end)
 RegisterNetEvent('miska_interactions:carry_stop',function (playerId)
     TriggerClientEvent('miska_interactions:carry_stopcl',playerId) 
+end)
+RegisterNetEvent('miska_interactions:delete_entity',function (entity)
+    DeleteEntity(NetworkGetEntityFromNetworkId(entity))
 end)

@@ -1,5 +1,3 @@
-
-ESX = exports["es_extended"]:getSharedObject()
 lib.locale()
 
 function hasaSharpWeapon()
@@ -13,15 +11,6 @@ function hasaSharpWeapon()
         end
     end
 end
-AddEventHandler('esx:onPlayerDeath', function(data)
- if LocalPlayer.state.InTrunk ~= nil then
-    TriggerServerEvent('miska_interactions:change_trunk_state',LocalPlayer.state.InTrunk,nil)
-    SetEntityVisible(cache.ped,true,0)
-    Wait(1000)
-    LocalPlayer.state.InTrunk = nil
-
- end
-end)
 
 
 local peopleOptions = {
@@ -256,7 +245,7 @@ local peopleOptions = {
         distance = 1,
         canInteract = function (entity)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)) 
-            if Player(targetPlayerId).state.isZiptied == true or Player(targetPlayerId).state.isHandCuffed == true then
+            if Player(targetPlayerId).state.isZiptied == true or Player(targetPlayerId).state.isHandCuffed == true   then
                 return true
             else
                 return false
@@ -352,15 +341,16 @@ local peopleOptions = {
         distance = 1,
         canInteract = function (entity)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
-            if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(cache.ped,true) ) and Player(targetPlayerId).state.InTrunk == nil then
+            if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true )  then
                 return true
+          
             else 
                 return false
             end
         end,
         onSelect =  function (data)
             local vehicle = lib.getClosestVehicle(GetEntityCoords(cache.ped),4)
-            if vehicle then
+            if vehicle and Entity(vehicle).state.PlayerInTrunk == nil then
                 
                 local boneIndex =GetEntityBoneIndexByName(vehicle,'boot')
                 if boneIndex == -1 then
@@ -392,7 +382,7 @@ local peopleOptions = {
                 local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
                 if Player(targetPlayerId).state.isBeingCarried ~= true and LocalPlayer.state.isCarrying == nil and LocalPlayer.state.Dragging == nil and Player(targetPlayerId).state.isBeingDragged == nil then
                      return true
-                
+              
                 else
                     return false
                 end
@@ -448,11 +438,15 @@ local vehicleOptions = {
   
 }
 if Config.TowingEnabled == true then
+ 
+  
     table.insert(vehicleOptions,{   
         icon ='fa-solid fa-car',
         label = locale('tow_car_away'),
         distance =1,
+        groups =Config.TowingGroups,
         onSelect = function (data)
+            
         if lib.progressBar({
             duration = 5000,
             label=locale('towing_car_away'),
@@ -460,14 +454,17 @@ if Config.TowingEnabled == true then
             canCancel= true,
             disable = {
                 car = true,
-                move = true
+                move = true,
+                combat = true,
             },
             anim ={scenario = 'WORLD_HUMAN_MOBILE_FILM_SHOCKING'}
         })then
+          
             if IsPedDeadOrDying(cache.ped,true) == false then
-            ESX.Game.DeleteVehicle(data.entity)
+            TriggerServerEvent('miska_interactions:delete_entity',NetworkGetNetworkIdFromEntity(data.entity))
             end
         end
+      
         end
     })
 end
@@ -524,11 +521,13 @@ RegisterNetEvent('miska_interactions:ziptie_detainee:detaincli',function ()
             LocalPlayer.state.invBusy = true 
         end
         
-        if IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1  and LocalPlayer.state.isBeingCarried ==nil then
+        if IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1  and LocalPlayer.state.isBeingCarried ==nil  then
+            if LocalPlayer.state.InTrunk == nil then
                 lib.requestAnimDict('mp_arresting')
                 TaskPlayAnim(cache.ped, 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0.0, false, false, false)
                 RemoveAnimDict('mp_arresting')
-        end
+            end
+            end
     end
     LocalPlayer.state.canUseWeapons = true
     LocalPlayer.state.invBusy = false
@@ -588,11 +587,14 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function ()
 			DisableControlAction(0, 143, true)
 			DisableControlAction(0, 75, true)
 			DisableControlAction(27, 75, true)
-   
+       if IsPedSwimming(cache.ped) then
+                SetPedToRagdoll(cache.ped, 1000, 1000, 0, false, false, false)
+        end
+       
         if LocalPlayer.state.invBusy == false then
             LocalPlayer.state.invBusy = true 
         end
-        if IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1 and LocalPlayer.state.isBeingCarried ==nil  then
+        if  IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1 and  LocalPlayer.state.isBeingCarried ==nil  and LocalPlayer.state.InTrunk == nil   then
                 lib.requestAnimDict('mp_arresting')
                 TaskPlayAnim(cache.ped, 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0.0, false, false, false)
                 RemoveAnimDict('mp_arresting')
@@ -606,7 +608,7 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function ()
     RemoveAnimDict('mp_arresting')
     
   
-    ESX.Game.DeleteObject(cuffEntity)
+   TriggerServerEvent('miska_interactions:delete_entity',NetworkGetNetworkIdFromEntity(cuffEntity))
     ClearPedTasks(cache.ped)
     exports.ox_target:disableTargeting(false)
 end)
@@ -674,47 +676,69 @@ RegisterNetEvent('miska_interactions:put_bag_offcl',function ()
 
     })
     
-    ESX.Game.DeleteObject(bagEntity)
+    TriggerServerEvent('miska_interactions:delete_entity',NetworkGetNetworkIdFromEntity(bagEntity))
 end)
 RegisterNetEvent('miska_interactions:put_into_trunkcl',function (vehicle)
     local vehicle =  NetworkGetEntityFromNetworkId(vehicle)
-    SetEntityVisible(cache.ped, false, 0) 
+   
     local boneIndex =GetEntityBoneIndexByName(vehicle,'boot')
    
-
-    AttachEntityToEntity(cache.ped,vehicle,boneIndex,0,0,-0.2,0,0,0,true,true,true,true,1,false)
-   
-    SetVehicleDoorOpen(vehicle,5,false,true )
     
+    local zcoord = GetWorldPositionOfEntityBone(vehicle,boneIndex) - GetEntityCoords(vehicle)
+    local zcoord = (math.abs(zcoord.z) * -1 )-0.13
+    AttachEntityToEntity(cache.ped,vehicle,boneIndex,0,0,zcoord,0,0,0,true,true,true,true,1,false)
+  
+    SetVehicleDoorOpen(vehicle,5,true,true )
+    SetEntityCollision(cache.ped,false,true)
+    
+    lib.requestAnimDict('fin_ext_p1-5')
+    ClearPedTasks(cache.ped)
+    TaskPlayAnim(cache.ped,'fin_ext_p1-5','cs_devin_dual-5',8.0,8.0,-1,1,0,false,false,false)    
     Wait(3000)
     SetVehicleDoorShut(vehicle,5,true)
-   
-    while LocalPlayer.state.InTrunk ~= nil do
-        Wait(5000)
-     
-        if DoesEntityExist(vehicle) ~= 1 then
 
-           LocalPlayer.state.InTrunk = nil
-            SetEntityVisible(cache.ped,true,0)
+    while LocalPlayer.state.InTrunk ~= nil do
+        Wait(1000)
+     
+        if DoesEntityExist(vehicle) ~= 1  then
+
+            TriggerServerEvent('miska_interactions:take_out_of_trunk',PlayerId(),nil)
+
+        end
+      
+        if IsPedDeadOrDying(cache.ped,true) == 1 then
+            TriggerServerEvent('miska_interactions:take_out_of_trunk',PlayerId(),LocalPlayer.state.InTrunk)
         end
     end
 end)
 RegisterNetEvent('miska_interactions:take_out_of_trunkcl',function (vehicle)
+    
+    if vehicle  and IsPedDeadOrDying ~= 1 then
     local vehicle = NetworkGetEntityFromNetworkId(vehicle)
-
-    SetVehicleDoorOpen(vehicle,5,false,true )
+    
+    SetVehicleDoorOpen(vehicle,5,true,true )
+   
+   
     DetachEntity(cache.ped,false,true)
-    Wait(3000)
-    local offset = GetOffsetFromEntityInWorldCoords(vehicle,0,-2.8,0)
-    
-    
+    Wait(500)
+    local offset = GetOffsetFromEntityInWorldCoords(vehicle,0,-3.2,0)
+   
+    RemoveAnimDict('fin_ext_p1-5')
+    SetEntityCollision(cache.ped,true,true)
     SetEntityCoords(cache.ped,offset.x,offset.y,offset.z,true,false,false,false)
+    ClearPedTasks(cache.ped)
+    Wait(500)
+  
+    Wait(2000)
     SetVehicleDoorShut(vehicle,5,true)
-    Wait(1000)
-    SetEntityVisible(cache.ped, true, 0) 
-
-    
-    
+    else
+        
+        RemoveAnimDict('fin_ext_p1-5')
+        ClearPedTasks(cache.ped)
+        SetEntityCollision(cache.ped,true,true)
+        DetachEntity(cache.ped,true,true)
+            
+    end 
     
 end)
 
