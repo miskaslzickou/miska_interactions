@@ -11,6 +11,7 @@
 * Putting into car/ taking out of car
 * Installation files included
 ## Dependencies
+* onesync with infinity required
 * es_extended
 * ox_lib
 * ox_target

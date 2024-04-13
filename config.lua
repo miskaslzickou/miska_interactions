@@ -4,6 +4,7 @@ Config.HandsUp.Dict = 'random@mugging3'
 Config.HandsUp.Anim = 'handsup_standing_base'
 Config.CarryEnabled = true
 
+
 Config.SharpWeapons = {
     'weapon_knife',
     'weapon_dagger',
