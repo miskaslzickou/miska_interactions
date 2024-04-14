@@ -1,6 +1,6 @@
 lib.locale()
 
-function hasaSharpWeapon()
+function hasASharpWeapon()
     for i =1,#Config.SharpWeapons  do
         local hashOfASharpWeapon = joaat(Config.SharpWeapons[i])
       
@@ -68,12 +68,18 @@ local peopleOptions = {
                 exports.ox_target:disableTargeting(true)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
             lib.requestAnimDict('mp_arrest_paired',200)
-           
+         
             TriggerServerEvent('miska_interactions:ziptie_detainee:detain',targetPlayerId)
-            Wait(300)
+            local offset = GetOffsetFromEntityInWorldCoords(data.entity,0,-0.9,0)
+            local heading = GetEntityHeading(data.entity)
+            SetEntityHeading(cache.ped,heading)
+            
+            SetEntityCoords(cache.ped,offset.x,offset.y,offset.z-1.0,true,false,false,false)
+            Wait(450)
             TaskPlayAnim(cache.ped,'mp_arrest_paired','cop_p2_back_right',8.0, -8, 4000, 0, 0, false, false, false )
-            RemoveAnimDict('mp_arrest_paired')
+          
             Wait(3000)
+            RemoveAnimDict('mp_arrest_paired')
             exports.ox_target:disableTargeting(false)
             end
         end
@@ -94,12 +100,18 @@ local peopleOptions = {
             if IsPedDeadOrDying(cache.ped,true) == false then
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
             exports.ox_target:disableTargeting(true)
-            if hasaSharpWeapon() == true then
+            if hasASharpWeapon() == true then
                
                 if LocalPlayer.state.Dragging == targetPlayerId then
                     TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                     LocalPlayer.state.Dragging = nil
                 end
+                local offset = GetOffsetFromEntityInWorldCoords(data.entity,0,-1.0,0)
+                local heading = GetEntityHeading(data.entity)
+                SetEntityHeading(cache.ped,heading)
+                
+                SetEntityCoords(cache.ped,offset.x,offset.y,offset.z-1.0,true,false,false,false)
+                Wait(200)
                 lib.requestAnimDict('mp_arresting')
                 TaskPlayAnim(cache.ped,'mp_arresting','a_uncuff',8.0,-8,3000,0,0.0,false,false,false)
                 TriggerServerEvent('miska_interactions:ziptie_free',targetPlayerId)
@@ -143,6 +155,10 @@ local peopleOptions = {
             lib.requestAnimDict('mp_arrest_paired',200)
            
             TriggerServerEvent('miska_interactions:handcuff_detainee:detain',targetPlayerId)
+            local offset = GetOffsetFromEntityInWorldCoords(data.entity,0,-0.9,0)
+            local heading = GetEntityHeading(data.entity)
+            SetEntityHeading(cache.ped,heading)
+            SetEntityCoords(cache.ped,offset.x,offset.y,offset.z-1.0,true,false,false,false)
             Wait(300)
             TaskPlayAnim(cache.ped,'mp_arrest_paired','cop_p2_back_right',8.0, -8, 4000, 0, 0, false, false, false )
             RemoveAnimDict('mp_arrest_paired')
@@ -179,6 +195,10 @@ local peopleOptions = {
                 lib.requestAnimDict('mp_arresting')
                
                 TriggerServerEvent('miska_interactions:handcuff_free',targetPlayerId)
+                local offset = GetOffsetFromEntityInWorldCoords(data.entity,0,-1.0,0)
+                local heading = GetEntityHeading(data.entity)
+                SetEntityHeading(cache.ped,heading)
+                SetEntityCoords(cache.ped,offset.x,offset.y,offset.z-1.0,true,false,false,false)
                 Wait(200)
                 TaskPlayAnim(cache.ped,'mp_arresting','a_uncuff',8.0,-8,3000,0,0.0,false,false,false)
               
@@ -468,6 +488,7 @@ if Config.TowingEnabled == true then
         end
     })
 end
+
 exports.ox_target:addGlobalVehicle(vehicleOptions)
 
 RegisterNetEvent('miska_interactions:ziptie_detainee:detaincli',function ()
@@ -521,13 +542,13 @@ RegisterNetEvent('miska_interactions:ziptie_detainee:detaincli',function ()
             LocalPlayer.state.invBusy = true 
         end
         
-        if IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1  and LocalPlayer.state.isBeingCarried ==nil  then
-            if LocalPlayer.state.InTrunk == nil then
+        if IsEntityPlayingAnim(cache.ped, 'mp_arresting', 'idle', 3) ~= 1  and LocalPlayer.state.isBeingCarried ==nil and LocalPlayer.state.InTrunk == nil  then
+         
                 lib.requestAnimDict('mp_arresting')
                 TaskPlayAnim(cache.ped, 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0.0, false, false, false)
                 RemoveAnimDict('mp_arresting')
-            end
-            end
+            
+        end
     end
     LocalPlayer.state.canUseWeapons = true
     LocalPlayer.state.invBusy = false
@@ -756,7 +777,7 @@ RegisterNetEvent('miska_interactions:carrycl',function (playerId,ped)
         local carrierCoords = GetEntityCoords(ped)
         local playerCoords = GetEntityCoords(cache.ped)
         local result = carrierCoords - playerCoords
-        if math.abs(result.x) <= 3.0 and math.abs(result.y) <= 3.0 and math.abs(result.z) <= 3.0 then 
+        if #result <= 3.0  then 
         lib.requestAnimDict('nm',300)
         TaskPlayAnim(cache.ped,'nm','firemans_carry',8.0,8.0,-1,33,0,false,false,false)
         AttachEntityToEntity(cache.ped,ped,-1,0.27,0.15,0.63,0.5,0.5,180,false,false,false,false,2,false)
