@@ -751,9 +751,12 @@ RegisterNetEvent('miska_interactions:carrycl',function (playerId,ped)
         centered = true,
         cancel = true
     })
- 
-    if alert =='confirm' then
-        
+
+    if alert =='confirm'  then
+        local carrierCoords = GetEntityCoords(ped)
+        local playerCoords = GetEntityCoords(cache.ped)
+        local result = carrierCoords - playerCoords
+        if math.abs(result.x) <= 3.0 and math.abs(result.y) <= 3.0 and math.abs(result.z) <= 3.0 then 
         lib.requestAnimDict('nm',300)
         TaskPlayAnim(cache.ped,'nm','firemans_carry',8.0,8.0,-1,33,0,false,false,false)
         AttachEntityToEntity(cache.ped,ped,-1,0.27,0.15,0.63,0.5,0.5,180,false,false,false,false,2,false)
@@ -795,7 +798,7 @@ RegisterNetEvent('miska_interactions:carrycl',function (playerId,ped)
 			DisableControlAction(27, 75, true)
         end
     end
-
+    end
     end
      
     
