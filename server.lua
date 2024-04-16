@@ -137,6 +137,6 @@ Player(Player(source).state.isBeingDragged).state.canUseWeapons = true
 Player(Player(source).state.isBeingCarried ~= nil).state.canUseWeapons = true
     end
     if Player(source).state.isCarrying ~= nil then
-        Player(Player(source).state.isCarrying).state.isBeingCarried = nil
+       TriggerClientEvent('miska_interactions:carry_stopcl',Player(source).state.isCarrying) Player(Player(source).state.isCarrying).state.isBeingCarried = nil
     end
   end)
