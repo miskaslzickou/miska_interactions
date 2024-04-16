@@ -4,7 +4,7 @@ RegisterNetEvent('miska_interactions:ziptie_detainee:detain',function (targetPla
     local detainee = GetPlayerPed(targetPlayerId)
     local detaineeCoords = GetEntityCoords(detainee)
     local captorCoords = GetEntityCoords(captor)
-    local distance = #(captorCoords - )detaineeCoords
+    local distance = #(captorCoords -detaineeCoords)
 
     if ziptiesCount == 0 or targetPlayerId == -1 or distance < 4.0  then
         DropPlayer(source,'Cheating')
@@ -27,7 +27,7 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detain',function (targetP
     local detainee = GetPlayerPed(targetPlayerId)
     local detaineeCoords = GetEntityCoords(detainee)
     local captorCoords = GetEntityCoords(captor)
-    local distance = #(captorCoords - )detaineeCoords
+    local distance = #(captorCoords -detaineeCoords)
     if handcuffsCount == 0 or targetPlayerId == -1 or distance < 4.0 then
         DropPlayer(source,'Cheating')
     else
