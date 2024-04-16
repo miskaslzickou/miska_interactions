@@ -28,4 +28,4 @@ server_script {"server.lua","@oxmysql/lib/MySQL.lua"}
 
 
 
-shared_scripts {'@ox_lib/init.lua','config.lua', '@es_extended/imports.lua' }
+shared_scripts {'@ox_lib/init.lua','config.lua'}
