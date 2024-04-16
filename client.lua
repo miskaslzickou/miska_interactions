@@ -781,7 +781,7 @@ RegisterNetEvent('miska_interactions:carrycl',function (playerId,ped)
         lib.requestAnimDict('nm',300)
         TaskPlayAnim(cache.ped,'nm','firemans_carry',8.0,8.0,-1,33,0,false,false,false)
         AttachEntityToEntity(cache.ped,ped,-1,0.27,0.15,0.63,0.5,0.5,180,false,false,false,false,2,false)
-        LocalPlayer.state.isBeingCarried = true
+        LocalPlayer.state.isBeingCarried = playerId
         LocalPlayer.state.invBusy = true
         if LocalPlayer.state.isZiptied == nil or LocalPlayer.state.isHandCuffed == nil or IsPedDeadOrDying == false then
         TriggerServerEvent('miska_interactions:carry_accepted',playerId)   

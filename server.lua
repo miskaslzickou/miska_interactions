@@ -1,7 +1,12 @@
 RegisterNetEvent('miska_interactions:ziptie_detainee:detain',function (targetPlayerId)
     local ziptiesCount =exports.ox_inventory:GetItemCount(source,Config.Items.ziptiesItem)
+    local captor = GetPlayerPed(source)
+    local detainee = GetPlayerPed(targetPlayerId)
+    local detaineeCoords = GetEntityCoords(detainee)
+    local captorCoords = GetEntityCoords(captor)
+    local distance = #(captorCoords - )detaineeCoords
 
-    if ziptiesCount == 0 or targetPlayerId == -1  then
+    if ziptiesCount == 0 or targetPlayerId == -1 or distance < 4.0  then
         DropPlayer(source,'Cheating')
     else
     exports.ox_inventory:RemoveItem(source,Config.Items.ziptiesItem,1)
@@ -18,8 +23,12 @@ RegisterNetEvent('miska_interactions:ziptie_free',function (targetPlayerId)
 end)
 RegisterNetEvent('miska_interactions:handcuff_detainee:detain',function (targetPlayerId)
     local handcuffsCount =exports.ox_inventory:GetItemCount(source,Config.Items.handcuffsItem)
-
-    if handcuffsCount == 0 or targetPlayerId == -1  then
+    local captor = GetPlayerPed(source)
+    local detainee = GetPlayerPed(targetPlayerId)
+    local detaineeCoords = GetEntityCoords(detainee)
+    local captorCoords = GetEntityCoords(captor)
+    local distance = #(captorCoords - )detaineeCoords
+    if handcuffsCount == 0 or targetPlayerId == -1 or distance < 4.0 then
         DropPlayer(source,'Cheating')
     else
     exports.ox_inventory:RemoveItem(source,Config.Items.handcuffsItem,1)
@@ -111,3 +120,20 @@ end)
 RegisterNetEvent('miska_interactions:delete_entity',function (entity)
     DeleteEntity(NetworkGetEntityFromNetworkId(entity))
 end)
+AddEventHandler('playerDropped', function (reason)
+    if Player(source).state.InTrunk ~= nil then
+        Entity(Player(source).state.InTrunk).state.PlayerInTrunk = nil
+    end
+    if Player(source).state.isBeingDragged ~= nil then
+        Player(Player(source).state.isBeingDragged).state.Dragging = nil
+    end
+    if Player(source).state.Dragging ~= nil then
+        Player(Player(source).state.Dragging).state.isBeingDragged = nil
+    end
+    if Player(source).state.isBeingCarried ~= nil then
+        Player(Player(source).state.isBeingCarried ~= nil).state.isCarrying = nil
+    end
+    if Player(source).state.isCarrying ~= nil then
+        Player(Player(source).state.isCarrying).state.isBeingCarried = nil
+    end
+  end)
