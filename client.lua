@@ -99,9 +99,9 @@ local peopleOptions = {
         onSelect = function (data)
             if IsPedDeadOrDying(cache.ped,true) == false then
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-            exports.ox_target:disableTargeting(true)
+           
             if hasASharpWeapon() == true then
-               
+                exports.ox_target:disableTargeting(true)
                 if LocalPlayer.state.Dragging == targetPlayerId then
                     TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                     LocalPlayer.state.Dragging = nil
@@ -231,7 +231,7 @@ local peopleOptions = {
             if IsPedDeadOrDying(cache.ped,true) == false then
           
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-            LocalPlayer.state.Dragging = targetPlayerId
+           
             TriggerServerEvent('miska_interactions:dragging',targetPlayerId,PedToNet(PlayerPedId()))
             end
         end
@@ -252,7 +252,7 @@ local peopleOptions = {
         onSelect = function (data)
             if IsPedDeadOrDying(cache.ped,true) == false then
             
-            LocalPlayer.state.Dragging = nil
+         
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
             TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
             end
