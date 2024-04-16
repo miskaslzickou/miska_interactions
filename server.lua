@@ -132,6 +132,7 @@ AddEventHandler('playerDropped', function (reason)
     end
     if Player(source).state.isBeingCarried ~= nil then
         Player(Player(source).state.isBeingCarried ~= nil).state.isCarrying = nil
+Player(Player(source).state.isBeingCarried ~= nil).state.canUseWeapons = true
     end
     if Player(source).state.isCarrying ~= nil then
         Player(Player(source).state.isCarrying).state.isBeingCarried = nil
