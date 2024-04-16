@@ -126,6 +126,8 @@ AddEventHandler('playerDropped', function (reason)
     end
     if Player(source).state.isBeingDragged ~= nil then
         Player(Player(source).state.isBeingDragged).state.Dragging = nil
+Player(Player(source).state.isBeingDragged).state.canUseWeapons = true
+
     end
     if Player(source).state.Dragging ~= nil then
         Player(Player(source).state.Dragging).state.isBeingDragged = nil
