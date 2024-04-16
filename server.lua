@@ -122,7 +122,7 @@ RegisterNetEvent('miska_interactions:delete_entity',function (entity)
 end)
 AddEventHandler('playerDropped', function (reason)
     if Player(source).state.InTrunk ~= nil then
-        Entity(Player(source).state.InTrunk).state.PlayerInTrunk = nil
+            Entity(NetworkGetEntityFromNetworkId(Player(source).state.InTrunk)).state.PlayerInTrunk = nil
     end
     if Player(source).state.isBeingDragged ~= nil then
         Player(Player(source).state.isBeingDragged).state.Dragging = nil
