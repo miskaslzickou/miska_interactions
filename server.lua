@@ -35,10 +35,11 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detain',function (targetP
      
     else
     exports.ox_inventory:RemoveItem(source,Config.Items.handcuffsItem,1)
-    
-
-   
-    TriggerClientEvent('miska_interactions:handcuff_detainee:detaincli',targetPlayerId)
+    local cuffModel = 'ba_prop_battle_cuffs'
+    local coords = GetEntityCoords(GetPlayerPed(source))
+    local cuffEntity = CreateObjectNoOffset(joaat(cuffModel) ,coords.x,coords.y,coords.z,true,true,false)
+  
+    TriggerClientEvent('miska_interactions:handcuff_detainee:detaincli',targetPlayerId,NetworkGetNetworkIdFromEntity(cuffEntity))
     Wait(2800)
     Player(targetPlayerId).state.isHandCuffed = true
     end
@@ -102,10 +103,13 @@ RegisterNetEvent('miska_interactions:put_bag_on',function (targetPlayerId)
         DropPlayer(source,'Cheating')
         
     else
-        Player(targetPlayerId).state.hasBagOnHead = true
+    
+    Player(targetPlayerId).state.hasBagOnHead = true
     exports.ox_inventory:RemoveItem(source,Config.Items.bagItem,1)
-        
-    TriggerClientEvent('miska_interactions:put_bag_oncl',targetPlayerId)
+    local coords = GetEntityCoords(GetPlayerPed(source))
+    local bagModel ='prop_cs_sack_01'
+    local bagEntity = CreateObjectNoOffset(joaat(bagModel),coords.x,coords.y,coords.z,true,true,true)  
+    TriggerClientEvent('miska_interactions:put_bag_oncl',targetPlayerId,NetworkGetNetworkIdFromEntity(bagEntity))
     end
 end)
 RegisterNetEvent('miska_interactions:put_bag_off',function (targetPlayerId)

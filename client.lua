@@ -20,7 +20,7 @@ local peopleOptions = {
         canInteract = function (entity)
            
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)) 
-            if Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(entity) == 1 or IsEntityPlayingAnim(entity,Config.HandsUp.Dict,Config.HandsUp.Anim,3) then            
+            if Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(entity,true) == true or IsEntityPlayingAnim(entity,Config.HandsUp.Dict,Config.HandsUp.Anim,3) then            
                 return true
             else 
                 return false
@@ -64,7 +64,7 @@ local peopleOptions = {
         end,
         distance = 1,
         onSelect = function (data)
-            if IsPedDeadOrDying(cache.ped,true) == false then
+         if IsPedDeadOrDying(cache.ped,true) == false then
                 exports.ox_target:disableTargeting(true)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
             lib.requestAnimDict('mp_arrest_paired',200)
@@ -105,6 +105,10 @@ local peopleOptions = {
                 if LocalPlayer.state.Dragging == targetPlayerId then
                     TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                     LocalPlayer.state.Dragging = nil
+                end
+
+                if Player(targetPlayerId).state.hasBagOnHead  == true then
+                    TriggerServerEvent('miska_interactions:put_bag_off',targetPlayerId)
                 end
                 local offset = GetOffsetFromEntityInWorldCoords(data.entity,0,-1.0,0)
                 local heading = GetEntityHeading(data.entity)
@@ -159,12 +163,10 @@ local peopleOptions = {
             local heading = GetEntityHeading(data.entity)
             SetEntityHeading(cache.ped,heading)
             SetEntityCoords(cache.ped,offset.x,offset.y,offset.z-1.0,true,false,false,false)
-            Wait(300)
+            Wait(500)
             TaskPlayAnim(cache.ped,'mp_arrest_paired','cop_p2_back_right',8.0, -8, 4000, 0, 0, false, false, false )
             RemoveAnimDict('mp_arrest_paired')
-            if Player(targetPlayerId).state.hasBagOnHead  == true then
-                TriggerEvent('miska_interactions:put_bag_off',targetPlayerId)
-            end
+         
             Wait(3000)
             exports.ox_target:disableTargeting(false)
             end
@@ -191,7 +193,10 @@ local peopleOptions = {
                     TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                     LocalPlayer.state.Dragging = nil
                 end
-            
+                if Player(targetPlayerId).state.hasBagOnHead  == true then
+                    print('has bag on head')
+                    TriggerServerEvent('miska_interactions:put_bag_off',targetPlayerId)
+                end
                 lib.requestAnimDict('mp_arresting')
                
                 TriggerServerEvent('miska_interactions:handcuff_free',targetPlayerId)
@@ -202,9 +207,7 @@ local peopleOptions = {
                 Wait(200)
                 TaskPlayAnim(cache.ped,'mp_arresting','a_uncuff',8.0,-8,3000,0,0.0,false,false,false)
               
-                if Player(targetPlayerId).state.hasBagOnHead  == true then
-                    TriggerEvent('miska_interactions:put_bag_off',targetPlayerId)
-                end
+                
                 Wait(3000)
                 RemoveAnimDict('mp_arresting')
                 exports.ox_target:disableTargeting(false)
@@ -424,12 +427,15 @@ local vehicleOptions = {
         onSelect = function (data)
             if IsPedDeadOrDying(cache.ped,true) == false then
             for i = 0, 6 do
+                if IsVehicleSeatFree(data.entity,i) == false then
                 local ped = GetPedInVehicleSeat(data.entity,i) 
+                if IsPedAPlayer(ped) == true then
                 local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(ped))
-                if ped == nil then return end
-                if Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true or IsPedDeadOrDying(ped,true) then
-                    TriggerServerEvent('miska_interactions:leave_car',targetPlayerId)
-                end               
+                if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true)  then 
+                        TriggerServerEvent('miska_interactions:leave_car',targetPlayerId)
+                end
+            end
+            end
             end
         end
         end
@@ -562,22 +568,26 @@ RegisterNetEvent('miska_interactions:ziptie_detainee:detaincli',function ()
 end)
 
 
-RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function ()
+RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function (cuffEntityNetId)
+
+    Wait(200)
+    local cuffEntity = NetworkGetEntityFromNetworkId(cuffEntityNetId)  
+    NetworkRequestControlOfEntity(cuffEntity)
     LocalPlayer.state.canUseWeapons = false
     LocalPlayer.state.invBusy = true
+    local cuffEntityNetId = cuffEntityNetId
     exports.ox_target:disableTargeting(true)
     lib.requestAnimDict('mp_arrest_paired',100)
+    
     TaskPlayAnim(cache.ped,'mp_arrest_paired','crook_p2_back_right',8.0,-8,4000,0,0.0,false,false,false)
     Wait(4000)
-    local cuffModel = 'ba_prop_battle_cuffs'
-    lib.requestModel(cuffModel)
-    local cuffEntity =CreateObject(joaat(cuffModel),0,0,0,true,true,false)
-    AttachEntityToEntity(cuffEntity, PlayerPedId(),42, 0.024147452582042, 0.060595231810598, 0.036692805193156, 10.09303755519, -65.134356240468, -116.79441831032, true, true, false, true, 1, true)
-    SetModelAsNoLongerNeeded(cuffModel)
+    
+   
+    AttachEntityToEntity(cuffEntity, cache.ped,42, 0.024147452582042, 0.060595231810598, 0.036692805193156, 10.09303755519, -65.134356240468, -116.79441831032, true, true, false, true, 1, true)
+   
     while LocalPlayer.state.isHandCuffed == true do
         Wait(0)
-
-			
+     
 			DisableControlAction(0, 24, true)
 			DisableControlAction(0, 257, true)
 			DisableControlAction(0, 25, true)
@@ -629,7 +639,7 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function ()
     RemoveAnimDict('mp_arresting')
     
   
-   TriggerServerEvent('miska_interactions:delete_entity',NetworkGetNetworkIdFromEntity(cuffEntity))
+   TriggerServerEvent('miska_interactions:delete_entity',cuffEntityNetId)
     ClearPedTasks(cache.ped)
     exports.ox_target:disableTargeting(false)
 end)
@@ -677,16 +687,22 @@ RegisterNetEvent('miska_interactions:leave_carcl',function ()
 	0 --[[ integer ]]
 )
 end)
-RegisterNetEvent('miska_interactions:put_bag_oncl',function ()
-    local bagModel ='p_cs_sack_01_s'
-    lib.requestModel(bagModel)
-     bagEntity =CreateObject(joaat(bagModel),0,0,0,true,true,true)
+RegisterNetEvent('miska_interactions:put_bag_oncl',function (bagNetworkId)
+    Wait(400)
+    local bagEntity = NetworkGetEntityFromNetworkId(bagNetworkId)
+    NetworkRequestControlOfEntity(bagEntity)
+  
+    bagNetworkID = bagNetworkId
+   
+  
+
+    Wait(200)  
     AttachEntityToEntity(bagEntity,cache.ped,98, 0.010123577358968, 0.01631026373313, 0, 1.8958819353146e-13, -88.077237140812, -95.833136409703, true, true, false, true, 1, true)
     SendNUIMessage({
         type ='bag',
         bagStatus = true
         })
-    SetModelAsNoLongerNeeded(bagModel)
+ 
    
    
 end)
@@ -697,7 +713,7 @@ RegisterNetEvent('miska_interactions:put_bag_offcl',function ()
 
     })
     
-    TriggerServerEvent('miska_interactions:delete_entity',NetworkGetNetworkIdFromEntity(bagEntity))
+    TriggerServerEvent('miska_interactions:delete_entity',bagNetworkID)
 end)
 RegisterNetEvent('miska_interactions:put_into_trunkcl',function (vehicle)
     local vehicle =  NetworkGetEntityFromNetworkId(vehicle)
