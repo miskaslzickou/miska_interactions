@@ -194,7 +194,7 @@ local peopleOptions = {
                     LocalPlayer.state.Dragging = nil
                 end
                 if Player(targetPlayerId).state.hasBagOnHead  == true then
-                    print('has bag on head')
+                   
                     TriggerServerEvent('miska_interactions:put_bag_off',targetPlayerId)
                 end
                 lib.requestAnimDict('mp_arresting')
