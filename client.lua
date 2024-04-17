@@ -11,7 +11,16 @@ function hasASharpWeapon()
         end
     end
 end
+function IsVehicleEmpty(vehicle)
+    local numberOfSeats = GetVehicleMaxNumberOfPassengers(vehicle)
+    for i = 0, numberOfSeats -1 do
+        if IsVehicleSeatFree(vehicle,i) == false then
+            return false
+        end
 
+    end
+    return true
+end
 
 local peopleOptions = {
     {
@@ -268,7 +277,7 @@ local peopleOptions = {
         distance = 1,
         canInteract = function (entity)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)) 
-            if Player(targetPlayerId).state.isZiptied == true or Player(targetPlayerId).state.isHandCuffed == true   then
+            if Player(targetPlayerId).state.isZiptied == true or Player(targetPlayerId).state.isHandCuffed == true and lib.getClosestVehicle(GetEntityCoords(cache.ped),3.0) ~= nil  then
                 return true
             else
                 return false
@@ -282,7 +291,7 @@ local peopleOptions = {
                 TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
                 LocalPlayer.state.Dragging = nil
             end
-            local vehicle = lib.getClosestVehicle(GetEntityCoords(cache.ped), 7.0, true)
+            local vehicle = lib.getClosestVehicle(GetEntityCoords(cache.ped), 3.0, true)
           
             if vehicle then
             TriggerServerEvent('miska_interactions:put_into_car',targetPlayerId,VehToNet(vehicle)) 
@@ -364,7 +373,7 @@ local peopleOptions = {
         distance = 1,
         canInteract = function (entity)
             local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
-            if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true )  then
+            if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true ) and lib.getClosestVehicle(GetEntityCoords(cache.ped),4.0) ~= nil then
                 return true
           
             else 
@@ -424,9 +433,13 @@ local vehicleOptions = {
         icon = 'fa-solid fa-car',
         label = locale('take_out_of_car'),
         distance = 1,
+        canInteract = function (entity)
+            return  not IsVehicleEmpty(entity)
+        end,
         onSelect = function (data)
             if IsPedDeadOrDying(cache.ped,true) == false then
-            for i = -1, 6 do
+                local numberOfSeats =GetVehicleMaxNumberOfPassengers( data.entity )
+            for i = 0, numberOfSeats - 1  do
                
                 if IsVehicleSeatFree(data.entity,i) == false then
                 local ped = GetPedInVehicleSeat(data.entity,i) 
