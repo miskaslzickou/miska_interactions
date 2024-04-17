@@ -426,12 +426,13 @@ local vehicleOptions = {
         distance = 1,
         onSelect = function (data)
             if IsPedDeadOrDying(cache.ped,true) == false then
-            for i = 0, 6 do
+            for i = -1, 6 do
+               
                 if IsVehicleSeatFree(data.entity,i) == false then
                 local ped = GetPedInVehicleSeat(data.entity,i) 
-                if IsPedAPlayer(ped) == true then
+                if IsPedAPlayer(ped) == 1 then
                 local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(ped))
-                if (Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true)  then 
+                if Player(targetPlayerId).state.isHandCuffed == true or Player(targetPlayerId).state.isZiptied == true  then 
                         TriggerServerEvent('miska_interactions:leave_car',targetPlayerId)
                 end
             end
