@@ -38,9 +38,11 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detain',function (targetP
     local cuffModel = 'ba_prop_battle_cuffs'
     local coords = GetEntityCoords(GetPlayerPed(source))
     local cuffEntity = CreateObjectNoOffset(joaat(cuffModel) ,coords.x,coords.y,coords.z,true,true,false)
-  
+    while DoesEntityExist(cuffEntity) == false do
+        Wait(5)
+    end
     TriggerClientEvent('miska_interactions:handcuff_detainee:detaincli',targetPlayerId,NetworkGetNetworkIdFromEntity(cuffEntity))
-    Wait(2800)
+  
     Player(targetPlayerId).state.isHandCuffed = true
     end
 
