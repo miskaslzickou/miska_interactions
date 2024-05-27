@@ -262,11 +262,21 @@ local peopleOptions = {
             end
         end,
         onSelect = function (data)
-            if IsPedDeadOrDying(cache.ped,true) == false then
-            
-         
-            local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-            TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
+            if IsPedDeadOrDying(cache.ped, true) == false then
+                local targetPlayerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
+                TriggerServerEvent('miska_interactions:dragging', targetPlayerId, PedToNet(PlayerPedId()))
+                
+                lib.showTextUI('[E] - '..locale('stop_drag'))
+
+                while true do
+                    Wait(0)
+                    
+                    if IsControlJustPressed(0, 38) then
+                        TriggerServerEvent('miska_interactions:stop_dragging', targetPlayerId)
+                        lib.hideTextUI()
+                        break
+                    end
+                end
             end
         end
     
@@ -659,7 +669,7 @@ RegisterNetEvent('miska_interactions:handcuff_detainee:detaincli',function (cuff
 end)
 RegisterNetEvent('miska_interactions:drag',function (dragger)
     local dragger = NetToPed(dragger)
-      AttachEntityToEntity(cache.ped,dragger,11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, true, true, 2, true)
+      AttachEntityToEntity(cache.ped,dragger,11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, true, 2, true)
 end)
 RegisterNetEvent('miska_interactions:stop_dragging',function ()
 
