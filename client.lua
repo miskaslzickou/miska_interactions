@@ -262,11 +262,21 @@ local peopleOptions = {
             end
         end,
         onSelect = function (data)
-            if IsPedDeadOrDying(cache.ped,true) == false then
-            
-         
-            local targetPlayerId =GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
-            TriggerServerEvent('miska_interactions:stop_dragging',targetPlayerId)
+            if IsPedDeadOrDying(cache.ped, true) == false then
+                local targetPlayerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity)) 
+                TriggerServerEvent('miska_interactions:dragging', targetPlayerId, PedToNet(PlayerPedId()))
+                
+                lib.showTextUI('[E] - '..locale('stop_drag'))
+
+                while true do
+                    Wait(0)
+                    
+                    if IsControlJustPressed(0, 38) then
+                        TriggerServerEvent('miska_interactions:stop_dragging', targetPlayerId)
+                        lib.hideTextUI()
+                        break
+                    end
+                end
             end
         end
     
